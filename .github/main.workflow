@@ -1,5 +1,5 @@
 workflow "Release a new version" {
-  on = "push"
+  on = "release"
   resolves = ["publish-on-orbs-registry"]
 }
 
