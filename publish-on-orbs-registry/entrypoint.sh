@@ -4,4 +4,4 @@
 circleci setup --no-prompt --token $CIRCLECI_TOKEN
 
 # Publish the orb on CircleCI Orbs Registry
-circleci orb publish source.yml nebulab/feature-branch-preview@dev:0.0.1
+circleci orb publish source.yml nebulab/feature-branch-preview@1.5.0
