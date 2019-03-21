@@ -35,6 +35,15 @@ workflows:
         user: <docker-server-user>
 ```
 
+## Publsh on Orbs Registry
+
+For now, to publish a new version we need to manually change the version in
+[entrypoint.sh](https://github.com/nebulab/circleci-orbs-feature-branch-preview/blob/62d846d5fe7d2c56ca8fbd51cb99a2708bc2460b/publish-on-orbs-registry/entrypoint.sh#L7).
+
+**TODO:**
+- Publish only when committing to master
+- Find a better way to handle the orb version
+
 ## Contributing
 
 Bug reports and pull requests are welcome!
