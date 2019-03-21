@@ -37,12 +37,15 @@ workflows:
 
 ## Publsh on Orbs Registry
 
-For now, to publish a new version we need to manually change the version in
-[entrypoint.sh](https://github.com/nebulab/circleci-orbs-feature-branch-preview/blob/62d846d5fe7d2c56ca8fbd51cb99a2708bc2460b/publish-on-orbs-registry/entrypoint.sh#L7).
+To publish a new version it's just needed to [create a new release on this
+repository](https://github.com/nebulab/circleci-orbs-feature-branch-preview/releases).
+A GitHub action will take care of everything else.
 
-**TODO:**
-- Publish only when committing to master
-- Find a better way to handle the orb version
+**NOTE:** The release tag name should match what CircleCI Orbs Registry expects,
+so:
+
+- `1.5.0` :thumbsup:
+- `v1.2` :thumbsdown:
 
 ## Contributing
 
