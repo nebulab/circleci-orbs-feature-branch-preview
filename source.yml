@@ -97,6 +97,12 @@ jobs:
             echo "export CONTAINER=$CIRCLE_PROJECT_REPONAME-\$BRANCH" >> $CIRCLE_BUILD_NUM
             echo "export DIRECTORY=$CIRCLE_PROJECT_REPONAME/\$BRANCH" >> $CIRCLE_BUILD_NUM
       - run:
+          name: Write Preview URL to a persisted file
+          command: |
+            source $CIRCLE_BUILD_NUM
+            mkdir -p workspace
+            echo "https://$SUBDOMAIN.<< parameters.domain >>" > workspace/preview-url
+      - run:
           name: Notify Preview Deploy Started
           command: |
             source $CIRCLE_BUILD_NUM
@@ -141,3 +147,7 @@ jobs:
             ssh << parameters.user >>@<< parameters.server >> "docker ps | grep $CIRCLE_PROJECT_REPONAME | grep -vE '`cat grep_regex`'" | awk '{print $2}' > old_containers
             ssh << parameters.user >>@<< parameters.server >> "docker rm -f "`cat old_containers`""
             ssh << parameters.user >>@<< parameters.server >> "rm -fr "`cat old_containers | sed "s/$CIRCLE_PROJECT_REPONAME-/$CIRCLE_PROJECT_REPONAME\//g"`""
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - preview-url
