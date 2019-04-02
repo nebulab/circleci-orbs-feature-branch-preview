@@ -87,6 +87,9 @@ jobs:
       - checkout
       - add_ssh_keys
       - run:
+          name: Install jq package
+          command: sudo apt-get install jq
+      - run:
           name: Add Docker Server To Known SSH Hosts
           command: ssh-keyscan -H << parameters.server >> >> ~/.ssh/known_hosts
       - run:
