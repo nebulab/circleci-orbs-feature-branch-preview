@@ -1,0 +1,17 @@
+description: |
+  Use the feature-branch-preview Orb to implement a preview server that will
+  use a pre-configured docker server to run your application containers.
+usage:
+  version: 2.1
+  orbs:
+    feature-branch: nebulab/feature-branch-preview
+  workflows:
+    cool-workflow:
+      jobs:
+        - feature-branch/preview:
+            domain: <domain-for-preview-apps>
+            github_repo: <your-github-repository>
+            github_token: <your-gh-auth-token>
+            letsencrypt_email: <email-for-ssl-cert>
+            server: <docker-server-to-run-containers>
+            user: <docker-server-user>
