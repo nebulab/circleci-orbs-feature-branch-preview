@@ -1,0 +1,5 @@
+version: 2.1
+description:
+  An Orb that can be used to connect via SSH to a remote server running a Docker
+  daemon to spin up containers that serve preview apps with code taken from
+  GitHub PRs.

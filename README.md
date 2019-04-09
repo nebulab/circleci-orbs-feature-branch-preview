@@ -35,36 +35,10 @@ workflows:
         user: <docker-server-user>
 ```
 
-## Publish on Orbs Registry
+## Publishing
 
-To publish CircleCI Orbs we use GitHub Actions configured under `.github`
-folder. Here's how to release an Orb, both for production and development:
-
-#### Production Release
-
-To publish a new version it's just needed to [create a new release on this
-repository](https://github.com/nebulab/circleci-orbs-feature-branch-preview/releases).
-A GitHub action will take care of everything else.
-
-**NOTE:** The release tag name should match what CircleCI Orbs Registry expects,
-so:
-
-- `1.5.0` :thumbsup:
-- `v1.2` :thumbsdown:
-
-#### Development Release
-
-Everytime you push a commit into master or any other branch, a GitHub Action
-will be triggered to relese a development version of the Orb, scoped by
-branch name.
-
-For example if you push a commit into the `your-username/my-feature` branch,
-a new development orb will be published as
-`nebulab/feature-branch-preview@dev:your-username-my-feature`.
-
-**NOTE:** Development orbs are mutable and expire after 90 days. If someone
-else pushes a new commit on the same branch your development orb will be
-overwritten.
+The [orb-tools Orb](https://github.com/CircleCI-Public/orb-tools-orb) is used for publishing
+development and production versions of this Orb.
 
 ## Contributing
 
