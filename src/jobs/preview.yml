@@ -96,6 +96,7 @@ steps:
         -e VIRTUAL_HOST=$SUBDOMAIN.<< parameters.domain >> \
         -e LETSENCRYPT_HOST=$SUBDOMAIN.<< parameters.domain >> \
         -e LETSENCRYPT_EMAIL=<< parameters.letsencrypt_email >> \
+        -e GIT_BRANCH=$CIRCLE_BRANCH \
         $CONTAINER"
   - run:
       name: Notify Preview Deploy Complete
