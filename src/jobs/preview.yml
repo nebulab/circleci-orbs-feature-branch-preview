@@ -85,7 +85,15 @@ steps:
       name: Build Docker Image On Docker Server
       command: |
         source $CIRCLE_BUILD_NUM
-        ssh << parameters.user >>@<< parameters.server >> "cd $DIRECTORY && << parameters.fetch_seed_data_command >> && docker build --label \"pull-request=${CIRCLE_PULL_REQUEST##*/}\" --label \"branch=$CIRCLE_BRANCH\" --label \"subdomain=$SUBDOMAIN\" -t $CONTAINER --build-arg SUBDOMAIN=$SUBDOMAIN --file=<< parameters.dockerfile >> ."
+        ssh << parameters.user >>@<< parameters.server >> "\
+        cd $DIRECTORY && << parameters.fetch_seed_data_command >> && \
+        docker build \
+        --label \"pull-request=${CIRCLE_PULL_REQUEST##*/}\" \
+        --label \"branch=$CIRCLE_BRANCH\" \
+        --label \"subdomain=$SUBDOMAIN\" \
+        -t $CONTAINER \
+        --build-arg SUBDOMAIN=$SUBDOMAIN \
+        --file=<< parameters.dockerfile >> ."
   - run:
       name: Run Docker Container On Docker Server
       command: |
