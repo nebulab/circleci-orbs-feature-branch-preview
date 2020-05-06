@@ -117,8 +117,7 @@ steps:
       name: Cleanup Old Containers
       command: |
         set +e
-        ssh << parameters.user >>@<< parameters.server >> "docker ps | grep $CIRCLE_PROJECT_REPONAME | head -n << parameters.fresh_containers_count >>" | awk '{ print $1 }' | tr '\n' '|' | sed 's/|$/\n/' > grep_regex
-        ssh << parameters.user >>@<< parameters.server >> "docker ps | grep $CIRCLE_PROJECT_REPONAME | grep -vE '`cat grep_regex`'" | awk '{print $2}' > old_containers
+        ssh << parameters.user >>@<< parameters.server >> "docker ps --format "{{.Names}}" --filter "name=$CIRCLE_PROJECT_REPONAME" | tail +$((<< parameters.fresh_containers_count >> + 1))" > old_containers
         ssh << parameters.user >>@<< parameters.server >> "docker rm -f "`cat old_containers`""
         ssh << parameters.user >>@<< parameters.server >> "rm -fr "`cat old_containers | sed "s/$CIRCLE_PROJECT_REPONAME-/$CIRCLE_PROJECT_REPONAME\//g"`""
   - persist_to_workspace:
