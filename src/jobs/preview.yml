@@ -112,7 +112,7 @@ steps:
         source $CIRCLE_BUILD_NUM
         curl -X POST -H "Content-Type: application/json" -H "Accept: application/vnd.github.ant-man-preview+json" \
         "https://api.github.com/repos/<< parameters.github_repo >>/deployments/`cat github_deploy_id`/statuses?access_token=<< parameters.github_token >>" \
-        -d '{ "state": "success", "environment_url": "https://'$SUBDOMAIN'.<< parameters.domain >>/", "environment": "preview"'
+        -d '{ "state": "success", "environment_url": "https://'$SUBDOMAIN'.<< parameters.domain >>/", "environment": "preview" }'
   - run:
       name: Cleanup Old Containers
       command: |
