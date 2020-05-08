@@ -79,13 +79,22 @@ steps:
       name: Upload Application To Docker Server
       command: |
         source $CIRCLE_BUILD_NUM
-        ssh << parameters.user >>@<< parameters.server >> "rm -fr $DIRECTORY && mkdir -p $DIRECTORY"
+        ssh << parameters.user >>@<< parameters.server >> "mkdir -p $DIRECTORY"
         tar c . | ssh << parameters.user >>@<< parameters.server >> "tar xC $DIRECTORY"
   - run:
       name: Build Docker Image On Docker Server
       command: |
         source $CIRCLE_BUILD_NUM
-        ssh << parameters.user >>@<< parameters.server >> "cd $DIRECTORY && << parameters.fetch_seed_data_command >> && docker build --label \"pull-request=${CIRCLE_PULL_REQUEST##*/}\" --label \"branch=$CIRCLE_BRANCH\" --label \"subdomain=$SUBDOMAIN\" -t $CONTAINER --build-arg SUBDOMAIN=$SUBDOMAIN --file=<< parameters.dockerfile >> ."
+        ssh << parameters.user >>@<< parameters.server >> "\
+        cd $DIRECTORY && << parameters.fetch_seed_data_command >> && \
+        docker build \
+        --label \"pull-request=${CIRCLE_PULL_REQUEST##*/}\" \
+        --label \"branch=$CIRCLE_BRANCH\" \
+        --label \"subdomain=$SUBDOMAIN\" \
+        -t $CONTAINER \
+        --build-arg SUBDOMAIN=$SUBDOMAIN \
+        --file=<< parameters.dockerfile >> ."
+        ssh << parameters.user >>@<< parameters.server >> "rm -fr $DIRECTORY"
   - run:
       name: Run Docker Container On Docker Server
       command: |
@@ -104,15 +113,13 @@ steps:
         source $CIRCLE_BUILD_NUM
         curl -X POST -H "Content-Type: application/json" -H "Accept: application/vnd.github.ant-man-preview+json" \
         "https://api.github.com/repos/<< parameters.github_repo >>/deployments/`cat github_deploy_id`/statuses?access_token=<< parameters.github_token >>" \
-        -d '{ "state": "success", "environment_url": "https://'$SUBDOMAIN'.<< parameters.domain >>/", "environment": "preview"'
+        -d '{ "state": "success", "environment_url": "https://'$SUBDOMAIN'.<< parameters.domain >>/", "environment": "preview" }'
   - run:
       name: Cleanup Old Containers
       command: |
         set +e
-        ssh << parameters.user >>@<< parameters.server >> "docker ps | grep $CIRCLE_PROJECT_REPONAME | head -n << parameters.fresh_containers_count >>" | awk '{ print $1 }' | tr '\n' '|' | sed 's/|$/\n/' > grep_regex
-        ssh << parameters.user >>@<< parameters.server >> "docker ps | grep $CIRCLE_PROJECT_REPONAME | grep -vE '`cat grep_regex`'" | awk '{print $2}' > old_containers
+        ssh << parameters.user >>@<< parameters.server >> "docker ps --format "{{.Names}}" --filter "name=$CIRCLE_PROJECT_REPONAME" | tail +$((<< parameters.fresh_containers_count >> + 1))" > old_containers
         ssh << parameters.user >>@<< parameters.server >> "docker rm -f "`cat old_containers`""
-        ssh << parameters.user >>@<< parameters.server >> "rm -fr "`cat old_containers | sed "s/$CIRCLE_PROJECT_REPONAME-/$CIRCLE_PROJECT_REPONAME\//g"`""
   - persist_to_workspace:
       root: workspace
       paths:
