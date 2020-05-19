@@ -119,7 +119,7 @@ steps:
       command: |
         set +e
         ssh << parameters.user >>@<< parameters.server >> "docker ps --format "{{.Names}}" --filter "name=$CIRCLE_PROJECT_REPONAME" | tail +$((<< parameters.fresh_containers_count >> + 1))" > old_containers
-        ssh << parameters.user >>@<< parameters.server >> "docker rm -f "`cat old_containers`""
+        if [ -s old_containers ]; then ssh << parameters.user >>@<< parameters.server >> "docker rm -f "`cat old_containers`""; fi
   - persist_to_workspace:
       root: workspace
       paths:
