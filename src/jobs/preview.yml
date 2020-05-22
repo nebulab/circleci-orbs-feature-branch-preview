@@ -71,9 +71,13 @@ steps:
       name: Notify Preview Deploy Started
       command: |
         source $CIRCLE_BUILD_NUM
-        curl -X POST -H "Content-Type: application/json" -H "Accept: application/vnd.github.ant-man-preview+json" \
-        "https://api.github.com/repos/<< parameters.github_repo >>/deployments?access_token=<< parameters.github_token >>" \
-        -d '{ "ref": "'$CIRCLE_SHA1'", "auto_merge": false, "required_contexts": [], "environment": "preview", "transient_environment": true }' | \
+        curl \
+          -X POST \
+          -H "Content-Type: application/json" \
+          -H "Accept: application/vnd.github.ant-man-preview+json" \
+          -H "Authorization: token << parameters.github_token >>" \
+          "https://api.github.com/repos/<< parameters.github_repo >>/deployments" \
+          -d '{ "ref": "'$CIRCLE_SHA1'", "auto_merge": false, "required_contexts": [], "environment": "preview", "transient_environment": true }' | \
         grep '"id"' | head -1 | awk '{gsub(/,/,""); print $2}' > github_deploy_id
   - run:
       name: Upload Application To Docker Server
@@ -111,9 +115,13 @@ steps:
       name: Notify Preview Deploy Complete
       command: |
         source $CIRCLE_BUILD_NUM
-        curl -X POST -H "Content-Type: application/json" -H "Accept: application/vnd.github.ant-man-preview+json" \
-        "https://api.github.com/repos/<< parameters.github_repo >>/deployments/`cat github_deploy_id`/statuses?access_token=<< parameters.github_token >>" \
-        -d '{ "state": "success", "environment_url": "https://'$SUBDOMAIN'.<< parameters.domain >>/", "environment": "preview" }'
+        curl \
+          -X POST \
+          -H "Content-Type: application/json" \
+          -H "Accept: application/vnd.github.ant-man-preview+json" \
+          -H "Authorization: token << parameters.github_token >>" \
+          "https://api.github.com/repos/<< parameters.github_repo >>/deployments/`cat github_deploy_id`/statuses" \
+          -d '{ "state": "success", "environment_url": "https://'$SUBDOMAIN'.<< parameters.domain >>/", "environment": "preview" }'
   - run:
       name: Cleanup Old Containers
       command: |
